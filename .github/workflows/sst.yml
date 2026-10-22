@@ -1,0 +1,35 @@
+name: Sea surface temperature
+
+on:
+  schedule:
+    - cron: "35 15 * * *"
+    - cron: "35 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Copernicus Marine toolbox
+        run: pip install --quiet copernicusmarine numpy
+      - name: Fetch satellite temperature
+        env:
+          COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUSMARINE_SERVICE_USERNAME }}
+          COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUSMARINE_SERVICE_PASSWORD }}
+        run: python fetch_sst.py
+      - name: Save sst.json
+        run: |
+          git config user.name "sea-temp bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sst.json points.json
+          git diff --cached --quiet && echo "nothing changed" && exit 0
+          git commit -m "SST $(date -u +%F)"
+          git push
