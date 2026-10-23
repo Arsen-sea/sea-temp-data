@@ -18,7 +18,7 @@ import urllib.request
 import numpy as np
 
 DATASET = "SST_MED_SST_L4_NRT_OBSERVATIONS_010_004_c_V2"   # Mediterranean L4 SST, 1/100°, daily (night)
-POINTS_URL = "https://kutsenkokvalitet.me/sea/points.php"
+POINTS_URL = "https://moreza.me/points.php"
 BBOX = dict(minimum_longitude=18.35, maximum_longitude=19.50, minimum_latitude=41.75, maximum_latitude=42.60)
 MAX_KM = 3.0          # beach further than this from any sea pixel with data gets no satellite value
 DAYS_BACK = 5         # look this many days back for the latest field with data
